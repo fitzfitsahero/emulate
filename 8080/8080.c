@@ -923,6 +923,121 @@ int Emulate8080p(State8080 *state)
       state->cc.cy = ((result & 0x100) != 0);
       break;
     }
+    case 0x98:  // SSB B
+    {
+      uint16_t result = (uint16_t)state->a - ((uint16_t)state->b + state->cc.cy);
+      state->a = (uint8_t)result;
+      state->cc.z = ((result & 0xff) == 0);
+      state->cc.s = ((result & 0x80) != 0);
+      state->cc.p = Parity(state->a, 8);
+      state->cc.cy = ((result & 0x100) != 0);
+      break;
+    }
+    case 0x99:  // SSB C
+    {
+      uint16_t result = (uint16_t)state->a - ((uint16_t)state->c + state->cc.cy);
+      state->a = (uint8_t)result;
+      state->cc.z = ((result & 0xff) == 0);
+      state->cc.s = ((result & 0x80) != 0);
+      state->cc.p = Parity(state->a, 8);
+      state->cc.cy = ((result & 0x100) != 0);
+      break;
+    }
+    case 0x9a:  // SSB D
+    {
+      uint16_t result = (uint16_t)state->a - ((uint16_t)state->d + state->cc.cy);
+      state->a = (uint8_t)result;
+      state->cc.z = ((result & 0xff) == 0);
+      state->cc.s = ((result & 0x80) != 0);
+      state->cc.p = Parity(state->a, 8);
+      state->cc.cy = ((result & 0x100) != 0);
+      break;
+    }
+    case 0x9b:  // SSB E
+    {
+      uint16_t result = (uint16_t)state->a - ((uint16_t)state->e + state->cc.cy);
+      state->a = (uint8_t)result;
+      state->cc.z = ((result & 0xff) == 0);
+      state->cc.s = ((result & 0x80) != 0);
+      state->cc.p = Parity(state->a, 8);
+      state->cc.cy = ((result & 0x100) != 0);
+      break;
+    }
+    case 0x9c:  // SSB H
+    {
+      uint16_t result = (uint16_t)state->a - ((uint16_t)state->h + state->cc.cy);
+      state->a = (uint8_t)result;
+      state->cc.z = ((result & 0xff) == 0);
+      state->cc.s = ((result & 0x80) != 0);
+      state->cc.p = Parity(state->a, 8);
+      state->cc.cy = ((result & 0x100) != 0);
+      break;
+    }
+    case 0x9d:  // SSB L
+    {
+      uint16_t result = (uint16_t)state->a - ((uint16_t)state->l + state->cc.cy);
+      state->a = (uint8_t)result;
+      state->cc.z = ((result & 0xff) == 0);
+      state->cc.s = ((result & 0x80) != 0);
+      state->cc.p = Parity(state->a, 8);
+      state->cc.cy = ((result & 0x100) != 0);
+      break;
+    }
+    case 0x9f:  // SSB A
+    {
+      uint16_t result = (uint16_t)state->a - ((uint16_t)state->a + state->cc.cy);
+      state->a = (uint8_t)result;
+      state->cc.z = ((result & 0xff) == 0);
+      state->cc.s = ((result & 0x80) != 0);
+      state->cc.p = Parity(state->a, 8);
+      state->cc.cy = ((result & 0x100) != 0);
+      break;
+    }
+    case 0xa1:  // ANA C
+      {
+        state->a &= state->c;
+        state->cc.cy = 0;
+        state->cc.z = ((state->a & 0xff) == 0);
+        state->cc.s = ((state->a & 0x80) != 0);
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
+    case 0xa2:  // ANA D
+      {
+        state->a &= state->d;
+        state->cc.cy = 0;
+        state->cc.z = ((state->a & 0xff) == 0);
+        state->cc.s = ((state->a & 0x80) != 0);
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
+    case 0xa3:  // ANA E
+      {
+        state->a &= state->e;
+        state->cc.cy = 0;
+        state->cc.z = ((state->a & 0xff) == 0);
+        state->cc.s = ((state->a & 0x80) != 0);
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
+    case 0xa4:  // ANA H
+      {
+        state->a &= state->h;
+        state->cc.cy = 0;
+        state->cc.z = ((state->a & 0xff) == 0);
+        state->cc.s = ((state->a & 0x80) != 0);
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
+    case 0xa5:  // ANA L
+      {
+        state->a &= state->l;
+        state->cc.cy = 0;
+        state->cc.z = ((state->a & 0xff) == 0);
+        state->cc.s = ((state->a & 0x80) != 0);
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
     case 0xa7:  // ANA A
       {
         state->a &= state->a;
@@ -942,9 +1057,54 @@ int Emulate8080p(State8080 *state)
         state->cc.p = Parity(state->a, 8);
         break;
       }
+    case 0xb0:  // ORA B
+      {
+        state->a |= state->b;
+        state->cc.cy = 0;
+        state->cc.z = ((state->a & 0xff) == 0);
+        state->cc.s = ((state->a & 0x80) != 0);
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
+    case 0xb1:  // ORA C
+      {
+        state->a |= state->c;
+        state->cc.cy = 0;
+        state->cc.z = ((state->a & 0xff) == 0);
+        state->cc.s = ((state->a & 0x80) != 0);
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
+    case 0xb2:  // ORA D
+      {
+        state->a |= state->d;
+        state->cc.cy = 0;
+        state->cc.z = ((state->a & 0xff) == 0);
+        state->cc.s = ((state->a & 0x80) != 0);
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
     case 0xb3:  // ORA E
       {
         state->a |= state->e;
+        state->cc.cy = 0;
+        state->cc.z = ((state->a & 0xff) == 0);
+        state->cc.s = ((state->a & 0x80) != 0);
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
+    case 0xb4:  // ORA H
+      {
+        state->a |= state->h;
+        state->cc.cy = 0;
+        state->cc.z = ((state->a & 0xff) == 0);
+        state->cc.s = ((state->a & 0x80) != 0);
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
+    case 0xb5:  // ORA L
+      {
+        state->a |= state->l;
         state->cc.cy = 0;
         state->cc.z = ((state->a & 0xff) == 0);
         state->cc.s = ((state->a & 0x80) != 0);
@@ -960,6 +1120,15 @@ int Emulate8080p(State8080 *state)
         state->cc.s = ((result & 0x80) != 0);
         state->cc.p = Parity(result, 8);
         state->a = result & 0xff;
+        break;
+      }
+    case 0xb7:  // ORA A
+      {
+        state->a |= state->a;
+        state->cc.cy = 0;
+        state->cc.z = ((state->a & 0xff) == 0);
+        state->cc.s = ((state->a & 0x80) != 0);
+        state->cc.p = Parity(state->a, 8);
         break;
       }
 #if 0
