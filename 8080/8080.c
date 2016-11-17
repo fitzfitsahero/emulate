@@ -457,6 +457,12 @@ int Emulate8080p(State8080 *state)
         state->b = state->l;
         break;
       }
+    case 0x46:  // MOV B,M
+    {
+      uint16_t offset = ((state->h << 8) | state->l);
+      state->b = state->memory[offset];
+      break;
+    }
     case 0x47:  // MOV B,A
       {
         state->b = state->a;
@@ -650,11 +656,47 @@ int Emulate8080p(State8080 *state)
       state->l = state->l;
       break;
     }
+    case 0x6e:  // MOV L,M
+    {
+      uint16_t offset = ((state->h << 8) | state->l);
+      state->l = state->memory[offset];
+      break;
+    }
     case 0x6f:  // MOV L,A
       {
         state->l = state->a;
         break;
       }
+    case 0x70:  // MOV M,B
+    {
+      uint16_t offset = ((state->h << 8) | state->l);
+      state->memory[offset] = state->b;
+      break;
+    }
+    case 0x72:  // MOV M,D
+    {
+      uint16_t offset = ((state->h << 8) | state->l);
+      state->memory[offset] = state->d;
+      break;
+    }
+    case 0x73:  // MOV M,E
+    {
+      uint16_t offset = ((state->h << 8) | state->l);
+      state->memory[offset] = state->e;
+      break;
+    }
+    case 0x74:  // MOV M,H
+    {
+      uint16_t offset = ((state->h << 8) | state->l);
+      state->memory[offset] = state->h;
+      break;
+    }
+    case 0x75:  // MOV M,L
+    {
+      uint16_t offset = ((state->h << 8) | state->l);
+      state->memory[offset] = state->l;
+      break;
+    }
     case 0x77:  // MOV M,A
       {
         uint16_t offset = ((state->h << 8) | state->l);
@@ -1047,6 +1089,66 @@ int Emulate8080p(State8080 *state)
         state->cc.p = Parity(state->a, 8);
         break;
       }
+    case 0xa8:  // XRA B
+      {
+        state->a ^= state->b;
+        state->cc.z = 1;
+        state->cc.s = 0;
+        state->cc.cy = 0;
+        state->cc.ac = 0;
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
+    case 0xa9:  // XRA C
+      {
+        state->a ^= state->c;
+        state->cc.z = 1;
+        state->cc.s = 0;
+        state->cc.cy = 0;
+        state->cc.ac = 0;
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
+    case 0xaa:  // XRA D
+      {
+        state->a ^= state->d;
+        state->cc.z = 1;
+        state->cc.s = 0;
+        state->cc.cy = 0;
+        state->cc.ac = 0;
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
+    case 0xab:  // XRA E
+      {
+        state->a ^= state->e;
+        state->cc.z = 1;
+        state->cc.s = 0;
+        state->cc.cy = 0;
+        state->cc.ac = 0;
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
+    case 0xac:  // XRA H
+      {
+        state->a ^= state->h;
+        state->cc.z = 1;
+        state->cc.s = 0;
+        state->cc.cy = 0;
+        state->cc.ac = 0;
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
+    case 0xad:  // XRA L
+      {
+        state->a ^= state->l;
+        state->cc.z = 1;
+        state->cc.s = 0;
+        state->cc.cy = 0;
+        state->cc.ac = 0;
+        state->cc.p = Parity(state->a, 8);
+        break;
+      }
     case 0xaf:  // XRA A
       {
         state->a ^= state->a;
@@ -1131,7 +1233,33 @@ int Emulate8080p(State8080 *state)
         state->cc.p = Parity(state->a, 8);
         break;
       }
-#if 0
+    case 0xb8:  // CMP B
+    {
+      uint16_t result = state->a - state->b;
+      state->cc.z = ((result & 0xff) == 0);
+      state->cc.s = ((result & 0x80) != 0);
+      state->cc.cy = ((result & 0x100) != 0);
+      state->cc.p = Parity(result, 8);
+      break; 
+    }
+    case 0xba:  // CMP D
+    {
+      uint16_t result = state->a - state->d;
+      state->cc.z = ((result & 0xff) == 0);
+      state->cc.s = ((result & 0x80) != 0);
+      state->cc.cy = ((result & 0x100) != 0);
+      state->cc.p = Parity(result, 8);
+      break; 
+    }
+    case 0xbb:  // CMP e
+    {
+      uint16_t result = state->a - state->e;
+      state->cc.z = ((result & 0xff) == 0);
+      state->cc.s = ((result & 0x80) != 0);
+      state->cc.cy = ((result & 0x100) != 0);
+      state->cc.p = Parity(result, 8);
+      break; 
+    }
     case 0xbc:  // CMP H
       {
         uint16_t result = state->a - state->h;
@@ -1141,7 +1269,25 @@ int Emulate8080p(State8080 *state)
         state->cc.cy = ((result & 0x100) != 1);
         break;
       }
-#endif
+    case 0xbd:  // CMP L
+      {
+        uint16_t result = state->a - state->l;
+        state->cc.z = (result == 0);
+        state->cc.s = ((result & 0xff00) != 0);
+        state->cc.p = Parity(result, 8);
+        state->cc.cy = ((result & 0x100) != 1);
+        break;
+      }
+    case 0xbe:  // CMP M
+      {
+        uint16_t offset = ((state->h << 8) | state->l);
+        uint16_t result = state->a - state->memory[offset];
+        state->cc.z = (result == 0);
+        state->cc.s = ((result & 0xff00) != 0);
+        state->cc.p = Parity(result, 8);
+        state->cc.cy = ((result & 0x100) != 1);
+        break;
+      }
     case 0xc0:  // RNZ
       {
         if(!state->cc.z) {
